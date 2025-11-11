@@ -5,7 +5,10 @@ namespace flappy
 	void CheckArenaCollision(Player& player);
 
 	void InitPlayer(Player& player)
+
 	{
+
+
 		player.playerFigure.x = 200.0f;
 		player.playerFigure.y = 300.0f;
 		player.playerFigure.width = 30.0f;
@@ -29,6 +32,19 @@ namespace flappy
 		}
 
 		if (!IsKeyDown(KEY_W))
+		{
+			player.moveUp = false;
+		}
+	}
+
+	void InputPlayer2(Player& player)
+	{
+		if (IsKeyDown(KEY_UP))
+		{
+			player.moveUp = true;
+		}
+
+		if (!IsKeyDown(KEY_UP))
 		{
 			player.moveUp = false;
 		}

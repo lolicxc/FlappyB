@@ -17,6 +17,7 @@ namespace flappy
 		Rectangle backButton;
 		Rectangle playButton;
 		//Rectangle rulesButton;
+		Rectangle play2PButton;
 		Rectangle creditsButton;
 		Rectangle backMenuButton;
 		Rectangle resetButton;
@@ -24,6 +25,7 @@ namespace flappy
 		int backButtState;
 		int playButtState;
 		//int rulesButtState;
+		int play2PButtState;
 		int creditsButtState;
 		int backToMenuButtState;
 		int resetButtState;

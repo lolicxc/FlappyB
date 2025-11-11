@@ -19,6 +19,7 @@ namespace flappy
 
 	void InitPlayer(Player& player);
 	void InputPlayer(Player& player);
+	void InputPlayer2(Player& player);
 	void UpdatePlayer(Player& player);
 	void DrawPlayer(Player player);
 }

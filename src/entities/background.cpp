@@ -62,6 +62,7 @@ namespace flappy
 		DrawTextureEx(gameBackGround.part1, { gameBackGround.scrollPart1 ,54.0f }, 0.0f, 2.0f, backColor);
 		DrawTextureEx(gameBackGround.part1, { gameBackGround.part1.width*2 + gameBackGround.scrollPart1 ,54.0f }, 0.0f, 2.0f, backColor);
 	}
+
 	void UnloadBackGorund()
 	{
 		UnloadTexture(gameBackGround.part1);

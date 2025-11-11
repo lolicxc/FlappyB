@@ -53,10 +53,12 @@ namespace flappy
 
 		float playButtonPosy = 290.0f;
 		//float rulesButtonPosy = 370.0f;
+		float play2PButtonPosy = 370.0f;
 		float creditButtonPosy = 450.0f;
 
 		//posiciones de botones y tamanio de hitbox
 		buttons.playButton = { menuButtonsPosX,playButtonPosy,buttonWidth,buttonHeight };
+		buttons.play2PButton = { menuButtonsPosX, play2PButtonPosy, buttonWidth, buttonHeight };
 		//buttons.rulesButton = { menuButtonsPosX,rulesButtonPosy,buttonWidth,buttonHeight };
 		buttons.creditsButton = { menuButtonsPosX,creditButtonPosy,buttonWidth,buttonHeight };
 
@@ -73,6 +75,7 @@ namespace flappy
 
 			buttons.playButtState = GetButtonState(buttons.playButton);
 			//buttons.rulesButtState = GetButtonState(buttons.rulesButton);
+			buttons.play2PButtState = GetButtonState(buttons.play2PButton);
 			buttons.creditsButtState = GetButtonState(buttons.creditsButton);
 
 			if (!IsMouseOverButton(buttons.playButton)
@@ -86,6 +89,10 @@ namespace flappy
 			{
 				//PlaySFX(audio.clickSound);
 				gameStats.gameStatus = SceneStatus::RESETGAME;
+			}
+			else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && IsMouseOverButton(buttons.play2PButton))
+			{
+				gameStats.gameStatus = SceneStatus::GAMEPLAY2P; // ?? modo 2 jugadores
 			}
 			//else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
 			//	&& IsMouseOverButton(buttons.rulesButton))
@@ -161,6 +168,9 @@ namespace flappy
 			}
 			break;
 
+		case SceneStatus::GAMEPLAY2P:
+
+			break;
 		case SceneStatus::GAMEPAUSE:
 
 			buttons.backToMenuButtState = GetButtonState(buttons.backMenuButton);
@@ -297,10 +307,12 @@ namespace flappy
 
 			DrawButton(buttons.playButton, buttons.playButtState);
 			//DrawButton(buttons.rulesButton, buttons.rulesButtState);
+			DrawButton(buttons.play2PButton, buttons.play2PButtState);
 			DrawButton(buttons.creditsButton, buttons.creditsButtState);
 
 			DrawText("ARACNOIDS", lineText1PosX, LineText1PosY, titleFontSize, textColor);
 			DrawText("Play", LineText2PosX, LineText2PosY, defaultFontSize, textColor);
+			DrawText("Play 2P", GetScreenWidth() / 2 - 45, 360, defaultFontSize, textColor);
 			//DrawText("Rules", LineText3PosX, LineText3PosY, defaultFontSize, textColor);
 			DrawText("Credits", LineText4PosX, LineText4PosY, defaultFontSize, textColor);
 
