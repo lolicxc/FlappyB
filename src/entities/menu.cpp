@@ -411,7 +411,7 @@ namespace flappy
 
 			DrawText("CREDITS", LineText1PosX, LineText1PosY, titleFontSize, textColor);
 
-			DrawText("-Game made by Francisco Jonas.",
+			DrawText("-Game made by Francisco Jonas and Dolores Caparroz.",
 				LineText2PosX, LineText2PosY, defaultFontSize, textColor);
 			DrawText("-Game assests made UNKnown",
 				LineText3PosX, LineText3PosY, defaultFontSize, textColor);

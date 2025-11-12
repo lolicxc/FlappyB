@@ -51,11 +51,8 @@ namespace flappy
 
 		InitPlayer(player);
 		InitPlayer(player2);
-		// Posiciones iniciales distintas
-		player.playerFigure.x = 200;
-		player.playerFigure.y = 300;
 
-		player2.playerFigure.x = screenWidth / 2 + 200;
+		player2.playerFigure.x = screenWidth / 2 + 300;
 		player2.playerFigure.y = 300;
 
 		InitEnemy(enemiesP1, MAX_ENEMIES);
@@ -131,11 +128,11 @@ namespace flappy
 		case SceneStatus::GAMEPLAY2P:
 			UpdateBackGorund();
 
-			// Ambos jugadores
+			
 			UpdatePlayer(player);
 			UpdatePlayer(player2);
 
-			// Enemigos independientes para cada lado
+			
 			UpdateEnemy(enemiesP1, MAX_ENEMIES, spawnTimerP1, true, true);
 			UpdateEnemy(enemiesP2, MAX_ENEMIES, spawnTimerP2, false, true);
 
