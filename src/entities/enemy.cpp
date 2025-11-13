@@ -1,174 +1,125 @@
 #include "enemy.h"
 
+
 namespace flappy
 {
-    const int MAX_ENEMIES = 5;
+	const int maxEnemys = 5;
 
-    Enemy enemiesP1[MAX_ENEMIES];
-    Enemy enemiesP2[MAX_ENEMIES];
+	float spawnTimer = 0.0f;
+	float spawnDelay = 2.0f;
+	float enemyCounter = 0;
 
-    float spawnTimerP1 = 0.0f;
-    float spawnTimerP2 = 0.0f;
+	Enemy enemy[maxEnemys];
 
+	void CheckArenaLimits(int i);
 
-    void CheckArenaLimits(Enemy enemyArray[], int i, bool toLeft)
-    {
-        if (!enemyArray[i].isAlive) return;
+	void InitEnemy()
+	{
+		for (int i = 0; i < maxEnemys; i++)
+		{
+			enemy[i].enemyFigureDown.x = 0.0f;
+			enemy[i].enemyFigureDown.y = 0.0f;
+			enemy[i].enemyFigureDown.width = 50.0f;
+			enemy[i].enemyFigureDown.height = 600.0f;
 
-        if (toLeft)
-        {
-            // Jugador 1: se mueve hacia la izquierda
-            if (enemyArray[i].enemyFigureDown.x + enemyArray[i].enemyFigureDown.width < 0)
-                enemyArray[i].isAlive = false;
-        }
-        else
-        {
-            // Jugador 2: se mueve hacia la derecha
-            if (enemyArray[i].enemyFigureDown.x > GetScreenWidth())
-                enemyArray[i].isAlive = false;
-        }
-    }
+			enemy[i].enemyFigureUp.x = 0.0f;
+			enemy[i].enemyFigureUp.y = 0.0f;
+			enemy[i].enemyFigureUp.width = 50.0f;
+			enemy[i].enemyFigureUp.height = 600.0f;
 
-    void InitEnemy(Enemy enemyArray[], int maxEnemies)
-    {
-        for (int i = 0; i < maxEnemies; i++)
-        {
-            enemyArray[i].enemyFigureDown = { 0, 0, 50, 600 };
-            enemyArray[i].enemyFigureUp = { 0, 0, 50, 600 };
-            enemyArray[i].speed = 200.0f;
-            enemyArray[i].isAlive = false;
-        }
-    }
+			enemy[i].isAlive = false;
+			enemy[i].speed = 200.0f;
+		}
+	}
 
-    void CreateEnemy(Enemy enemyArray[], int maxEnemies, bool toLeft, bool twoPlayers)
-    {
-        int minRangeYPos = 200;
-        int maxRangeYPos = 700;
-        int minEmptySpace = 170;
+	void CreateEnemy()
+	{
+		float auxPosX = 50.0f;
+		int minRangeYPos = 200;
+		int maxRangeYPos = 700;
+		int minEmptySpace = 170;
 
-        for (int i = 0; i < maxEnemies; i++)
-        {
-            if (!enemyArray[i].isAlive)
-            {
-                float startX = 0.0f;
+		for (int i = 0; i < maxEnemys; i++)
+		{
+			if (!enemy[i].isAlive)
+			{
+				enemy[i].enemyFigureDown.x = GetScreenWidth() + auxPosX;
+				enemy[i].enemyFigureDown.y = static_cast<float>(GetRandomValue(minRangeYPos, maxRangeYPos));
 
-                if (!twoPlayers)
-                {
-                    // Modo 1 jugador: desde la derecha de la pantalla
-                    startX = static_cast<float>(GetScreenWidth());
-                }
-                else
-                {
-                    if (toLeft)
-                        startX = static_cast<float>(GetScreenWidth() / 2 + 50); // Jugador 1: mitad derecha del centro
-                    else
-                        startX = static_cast<float>(GetScreenWidth() / 2 - 50); // Jugador 2: mitad izquierda del centro
-                }
+				enemy[i].enemyFigureUp.x = enemy[i].enemyFigureDown.x;
+				enemy[i].enemyFigureUp.y = (enemy[i].enemyFigureDown.y - enemy[i].enemyFigureUp.height - minEmptySpace);
 
-                enemyArray[i].enemyFigureDown.x = startX;
-                enemyArray[i].enemyFigureDown.y = static_cast<float>(GetRandomValue(minRangeYPos, maxRangeYPos));
-                enemyArray[i].enemyFigureUp.x = enemyArray[i].enemyFigureDown.x;
-                enemyArray[i].enemyFigureUp.y = enemyArray[i].enemyFigureDown.y - enemyArray[i].enemyFigureUp.height - minEmptySpace;
+				enemy[i].isAlive = true;
+				break;
+			}
+		}
+	}
+	void UpdateEnemy()
+	{
+		spawnTimer += GetFrameTime();
 
-                enemyArray[i].isAlive = true;
-                break;
-            }
-        }
-    }
+		if (spawnTimer >= spawnDelay && enemyCounter < maxEnemys)
+		{
+			CreateEnemy();
+			spawnTimer = 0;
+		}
 
+		for (int i = 0; i < maxEnemys; i++)
+		{
+			if (enemy[i].isAlive)
+			{
+				enemy[i].enemyFigureDown.x -= enemy[i].speed * GetFrameTime();
+				enemy[i].enemyFigureUp.x = enemy[i].enemyFigureDown.x;
+				CheckArenaLimits(i);
+			}
+		}
+	}
+	void DrawEnemy()
+	{
+		for (int i = 0; i < maxEnemys; i++)
+		{
+			if (enemy[i].isAlive)
+			{
+				DrawRectangle(static_cast <int>(enemy[i].enemyFigureDown.x),
+					static_cast <int>(enemy[i].enemyFigureDown.y),
+					static_cast <int>(enemy[i].enemyFigureDown.width),
+					static_cast <int>(enemy[i].enemyFigureDown.height), RED);
 
-    void UpdateEnemy(Enemy enemyArray[], int maxEnemies, float& spawnTimer, bool toLeft, bool twoPlayers)
-    {
-        spawnTimer += GetFrameTime();
-        float spawnDelay = 2.0f;
+				DrawRectangle(static_cast <int>(enemy[i].enemyFigureUp.x),
+					static_cast <int>(enemy[i].enemyFigureUp.y),
+					static_cast <int>(enemy[i].enemyFigureUp.width),
+					static_cast <int>(enemy[i].enemyFigureUp.height), RED);
+			}
+		}
+	}
 
-        if (spawnTimer >= spawnDelay)
-        {
-            CreateEnemy(enemyArray, maxEnemies, toLeft, twoPlayers);
-            spawnTimer = 0;
-        }
+	void CheckArenaLimits(int i)
+	{
+		if (enemy[i].isAlive && enemy[i].enemyFigureDown.x < 0.0f - enemy[i].enemyFigureDown.width)
+		{
+			enemy[i].isAlive = false;
+		}
+	}
 
-        for (int i = 0; i < maxEnemies; i++)
-        {
-            if (!enemyArray[i].isAlive) continue;
+	void CheckPlayerColision(Circle playerHitBox, bool& isHit)
+	{
+		for (int i = 0; i < maxEnemys; i++)
+		{
+			if (enemy[i].isAlive
+				&& playerHitBox.pos.x + playerHitBox.rad >= enemy[i].enemyFigureDown.x
+				&& playerHitBox.pos.y + playerHitBox.rad >= enemy[i].enemyFigureDown.y
+				&& playerHitBox.pos.x - playerHitBox.rad <= enemy[i].enemyFigureDown.x + enemy[i].enemyFigureDown.width)
+			{
+				isHit = true;
+			}
 
-            if (!twoPlayers)
-            {
-             
-                enemyArray[i].enemyFigureDown.x -= enemyArray[i].speed * GetFrameTime();
-            }
-            else
-            {
-                if (toLeft)
-                    enemyArray[i].enemyFigureDown.x -= enemyArray[i].speed * GetFrameTime();
-                else
-                    enemyArray[i].enemyFigureDown.x += enemyArray[i].speed * GetFrameTime();
-            }
-
-            enemyArray[i].enemyFigureUp.x = enemyArray[i].enemyFigureDown.x;
-
-            CheckArenaLimits(enemyArray, i, toLeft);
-        }
-    }
-
-
-    void DrawEnemy(Enemy enemyArray[], int maxEnemies)
-    {
-        for (int i = 0; i < maxEnemies; i++)
-        {
-            if (!enemyArray[i].isAlive) continue;
-            DrawRectangleRec(enemyArray[i].enemyFigureDown, RED);
-            DrawRectangleRec(enemyArray[i].enemyFigureUp, RED);
-        }
-    }
-
-    void CheckPlayerCollision(Enemy enemyArray[], int maxEnemies, Circle playerHitBox, bool& isHit)
-    {
-        for (int i = 0; i < maxEnemies; i++)
-        {
-            if (!enemyArray[i].isAlive) continue;
-
-            if (CheckCollisionCircleRec(playerHitBox.pos, playerHitBox.rad, enemyArray[i].enemyFigureDown) ||
-                CheckCollisionCircleRec(playerHitBox.pos, playerHitBox.rad, enemyArray[i].enemyFigureUp))
-            {
-                isHit = true;
-                return;
-            }
-        }
-    }
-
- 
-
-    void InitAllEnemies(bool twoPlayers)
-    {
-        InitEnemy(enemiesP1, MAX_ENEMIES);
-        if (twoPlayers)
-            InitEnemy(enemiesP2, MAX_ENEMIES);
-    }
-
-    void UpdateAllEnemies(bool twoPlayers)
-    {
-        if (!twoPlayers)
-            UpdateEnemy(enemiesP1, MAX_ENEMIES, spawnTimerP1, true, false); 
-        else
-        {
-            UpdateEnemy(enemiesP1, MAX_ENEMIES, spawnTimerP1, true, true);  
-            UpdateEnemy(enemiesP2, MAX_ENEMIES, spawnTimerP2, false, true); 
-        }
-    }
-
-
-    void DrawAllEnemies(bool twoPlayers)
-    {
-        DrawEnemy(enemiesP1, MAX_ENEMIES);
-        if (twoPlayers)
-            DrawEnemy(enemiesP2, MAX_ENEMIES);
-    }
-
-    void CheckCollisionsWithPlayers(Player& player1, Player& player2, bool twoPlayers)
-    {
-        CheckPlayerCollision(enemiesP1, MAX_ENEMIES, player1.playerHitbox, player1.playerGotHit);
-        if (twoPlayers)
-            CheckPlayerCollision(enemiesP2, MAX_ENEMIES, player2.playerHitbox, player2.playerGotHit);
-    }
+			else if (enemy[i].isAlive
+				&& playerHitBox.pos.x + playerHitBox.rad >= enemy[i].enemyFigureUp.x
+				&& playerHitBox.pos.y + playerHitBox.rad <= enemy[i].enemyFigureUp.y + enemy[i].enemyFigureUp.height
+				&& playerHitBox.pos.x - playerHitBox.rad <= enemy[i].enemyFigureUp.x + enemy[i].enemyFigureUp.width)
+			{
+				isHit = true;
+			}
+		}
+	}
 }

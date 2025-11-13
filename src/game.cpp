@@ -11,19 +11,15 @@ using namespace std;
 
 namespace flappy
 {
-
 	Player player;
 	Player player2;
 	GameStats gameStats;
 	MenuButtons buttons;
 
-
-
 	void Init();
 	void Input();
 	void Update();
 	void Draw();
-	void DrawSplitScreenGameplay();
 
 	void RunGame()
 	{
@@ -51,13 +47,9 @@ namespace flappy
 
 		InitPlayer(player);
 		InitPlayer(player2);
-
-		player2.playerFigure.x = screenWidth / 2 + 300;
-		player2.playerFigure.y = 300;
-
-		InitEnemy(enemiesP1, MAX_ENEMIES);
-		InitEnemy(enemiesP2, MAX_ENEMIES);
+		InitEnemy();
 		InitButtons(buttons);
+
 	}
 
 	void Input()
@@ -76,7 +68,7 @@ namespace flappy
 			InputPlayer(player);
 			break;
 		case SceneStatus::GAMEPLAY2P:
-			InputPlayer(player);  // Jugador 1
+			InputPlayer(player);
 			InputPlayer2(player2);
 			break;
 		case SceneStatus::GAMEPAUSE:
@@ -114,35 +106,38 @@ namespace flappy
 
 			UpdateBackGorund();
 			UpdatePlayer(player);
-			UpdateEnemy(enemiesP1, MAX_ENEMIES, spawnTimerP1, true, false);
-			CheckPlayerCollision(enemiesP1, MAX_ENEMIES, player.playerHitbox, player.playerGotHit);
-
+			UpdateEnemy();
 			UpdateSceneMenus(gameStats, buttons);
+			CheckPlayerColision(player.playerHitbox, player.playerGotHit);
 
 			if (player.playerGotHit)
 			{
 				gameStats.gameStatus = SceneStatus::RESETGAME;
 			}
 			break;
-
 		case SceneStatus::GAMEPLAY2P:
 			UpdateBackGorund();
 
-			
-			UpdatePlayer(player);
-			UpdatePlayer(player2);
+			if (player.isAlive)
+			{
+				UpdatePlayer(player);
+				CheckPlayerColision(player.playerHitbox, player.playerGotHit);
+				if (player.playerGotHit)
+					player.isAlive = false;
+			}
 
-			
-			UpdateEnemy(enemiesP1, MAX_ENEMIES, spawnTimerP1, true, true);
-			UpdateEnemy(enemiesP2, MAX_ENEMIES, spawnTimerP2, false, true);
+			if (player2.isAlive)
+			{
+				UpdatePlayer(player2);
+				CheckPlayerColision(player2.playerHitbox, player2.playerGotHit);
+				if (player2.playerGotHit)
+					player2.isAlive = false;
+			}
 
-			// Colisiones separadas
-			CheckPlayerCollision(enemiesP1, MAX_ENEMIES, player.playerHitbox, player.playerGotHit);
-			CheckPlayerCollision(enemiesP2, MAX_ENEMIES, player2.playerHitbox, player2.playerGotHit);
-
+			UpdateEnemy();
 			UpdateSceneMenus(gameStats, buttons);
 
-			if (player.playerGotHit || player2.playerGotHit)
+			if (!player.isAlive && !player2.isAlive)
 			{
 				gameStats.gameStatus = SceneStatus::RESETGAME;
 			}
@@ -153,13 +148,12 @@ namespace flappy
 
 			break;
 		case SceneStatus::RESETGAME:
-
 			InitPlayer(player);
 			InitPlayer(player2);
-			InitEnemy(enemiesP1, MAX_ENEMIES);
-			InitEnemy(enemiesP2, MAX_ENEMIES);
-			spawnTimerP1 = 0.0f;
-			spawnTimerP2 = 0.0f;
+			player.isAlive = true;
+			player2.isAlive = true;
+
+			InitEnemy();
 			gameStats.gameStatus = SceneStatus::FIRSTGAME;
 			break;
 		case SceneStatus::GAMEEND:
@@ -202,19 +196,21 @@ namespace flappy
 
 			DrawBackGround();
 			DrawPlayer(player);
-			DrawEnemy(enemiesP1, MAX_ENEMIES);
+			DrawEnemy();
 
 			break;
+
 		case SceneStatus::GAMEPLAY2P:
-			DrawSplitScreenGameplay();
+			DrawBackGround();
+			DrawPlayer(player);
+			DrawPlayer(player2);
+			DrawEnemy();
 			break;
 		case SceneStatus::GAMEPAUSE:
 			DrawBackGround();
+
 			DrawPlayer(player);
-			DrawEnemy(enemiesP1, MAX_ENEMIES);
-
-			DrawEnemy(enemiesP2, MAX_ENEMIES);
-
+			DrawEnemy();
 			DrawMenuTypeScene(gameStats, buttons);
 
 			break;
@@ -225,14 +221,8 @@ namespace flappy
 		case SceneStatus::GAMEEND:
 			DrawBackGround();
 
-			
 			DrawPlayer(player);
-			DrawEnemy(enemiesP1, MAX_ENEMIES);
-
-			
-			DrawPlayer(player2);
-			DrawEnemy(enemiesP2, MAX_ENEMIES);
-
+			DrawEnemy();
 			DrawMenuTypeScene(gameStats, buttons);
 
 			break;
@@ -245,29 +235,4 @@ namespace flappy
 
 		EndDrawing();
 	}
-
-	void DrawSplitScreenGameplay()
-	{
-		int screenWidth = GetScreenWidth();
-		int screenHeight = GetScreenHeight();
-
-		// Mitad izquierda (Jugador 1)
-		BeginScissorMode(0, 0, screenWidth / 2, screenHeight);
-		DrawBackGround();
-		DrawPlayer(player);
-		DrawEnemy(enemiesP1, MAX_ENEMIES);
-		DrawText("Jugador 1", 40, 20, 20, WHITE);
-		EndScissorMode();
-
-		// Mitad derecha (Jugador 2)
-		BeginScissorMode(screenWidth / 2, 0, screenWidth / 2, screenHeight);
-		DrawBackGround();
-		DrawPlayer(player2);
-		DrawEnemy(enemiesP2, MAX_ENEMIES);
-		DrawText("Jugador 2", screenWidth / 2 + 40, 20, 20, WHITE);
-		EndScissorMode();
-
-		DrawRectangle(screenWidth / 2 - 2, 0, 4, screenHeight, GRAY);
-	}
-
 }

@@ -7,8 +7,6 @@ namespace flappy
 	void InitPlayer(Player& player)
 
 	{
-
-
 		player.playerFigure.x = 200.0f;
 		player.playerFigure.y = 300.0f;
 		player.playerFigure.width = 30.0f;
@@ -19,10 +17,11 @@ namespace flappy
 		player.playerHitbox.pos.y = 300.0f + player.playerFigure.height/2;
 
 		player.lives = 1;
-		player.speed = 1000.0f;
+		player.speed = 300.0f;
 
 		player.moveUp = false;
 		player.playerGotHit = false;
+		player.isAlive = true;
 	}
 	void InputPlayer(Player& player)
 	{
@@ -52,27 +51,24 @@ namespace flappy
 
 	void UpdatePlayer(Player& player)
 	{
-		int gravity = 300;
-		float jumpForce = -800.0f;
 
+		float gravity = 1000.0f;   // fuerza de gravedad
+		float jumpForce = -350.0f; // impulso hacia arriba
+
+		// aplicar gravedad siempre
+		player.speed += gravity * GetFrameTime();
+
+		// si salta, aplicar impulso hacia arriba
 		if (player.moveUp)
 		{
-			player.speed = -jumpForce * GetFrameTime();
-			player.playerFigure.y -= player.speed;
-
-			player.playerHitbox.pos.y = player.playerFigure.y;
-		}
-		if (!player.moveUp)
-		{
-			player.speed = gravity * GetFrameTime();
-
-			player.playerFigure.y += player.speed;
+			player.speed = jumpForce;
 		}
 
-		CheckArenaCollision(player);
+		// actualizar posición según velocidad
+		player.playerFigure.y += player.speed * GetFrameTime();
 
-		player.playerHitbox.pos.x = player.playerFigure.x + player.playerFigure.width / 2;
-		player.playerHitbox.pos.y = player.playerFigure.y + player.playerFigure.height / 2;
+		// mantener hitbox alineado
+		player.playerHitbox.pos.y = player.playerFigure.y;
 	}
 	void DrawPlayer(Player player)
 	{

@@ -239,7 +239,7 @@ namespace flappy
 		{
 		case SceneStatus::GAMEMENU:
 
-			DrawText("v0.3", auxPosX, auxPosY, auxFont, WHITE);
+			DrawText("v0.4", auxPosX, auxPosY, auxFont, WHITE);
 			DrawMainMenu(gameStats, buttons);
 
 			break;

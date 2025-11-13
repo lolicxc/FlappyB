@@ -15,6 +15,7 @@ namespace flappy
 
 		bool moveUp;
 		bool playerGotHit;
+		bool isAlive;
 	};
 
 	void InitPlayer(Player& player);
