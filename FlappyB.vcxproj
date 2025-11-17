@@ -25,6 +25,7 @@
     <ClCompile Include="src\entities\player.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\entities\background.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="src\entities\menu.h" />
     <ClInclude Include="src\entities\player.h" />
     <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\score.h" />
     <ClInclude Include="src\utilities.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

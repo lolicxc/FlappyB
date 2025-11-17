@@ -6,7 +6,7 @@
 #include "entities/enemy.h"
 #include "entities/menu.h"
 #include "entities/background.h"
-
+#include "score.h"
 using namespace std;
 
 namespace flappy
@@ -49,6 +49,7 @@ namespace flappy
 		InitPlayer(player2);
 		InitEnemy();
 		InitButtons(buttons);
+		InitScore();
 
 	}
 
@@ -109,6 +110,7 @@ namespace flappy
 			UpdateEnemy();
 			UpdateSceneMenus(gameStats, buttons);
 			CheckPlayerColision(player.playerHitbox, player.playerGotHit);
+			UpdateScore(player);
 
 			if (player.playerGotHit)
 			{
@@ -197,6 +199,7 @@ namespace flappy
 			DrawBackGround();
 			DrawPlayer(player);
 			DrawEnemy();
+			DrawScore();
 
 			break;
 

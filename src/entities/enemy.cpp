@@ -38,12 +38,15 @@ namespace flappy
 
 	void CreateEnemy()
 	{
+
 		float gap = 230.0f;
 		int minY = 100;
 		int maxY = 350;
 
 		for (int i = 0; i < maxEnemys; i++)
 		{
+			
+
 			if (!enemy[i].isAlive)
 			{
 				float topHeight = (float)GetRandomValue(minY, maxY);
@@ -59,6 +62,7 @@ namespace flappy
 				enemy[i].enemyFigureDown.y = topHeight + gap;
 
 				enemy[i].isAlive = true;
+				enemy[i].scored = false;
 				break;
 			}
 		}

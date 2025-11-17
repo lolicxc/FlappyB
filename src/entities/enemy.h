@@ -4,6 +4,8 @@
 
 #include "raylib.h"
 
+const int maxEnemys = 5;
+
 namespace flappy
 {
 	struct Enemy
@@ -15,8 +17,10 @@ namespace flappy
 		bool isAlive;
 		Texture2D pipesTextUp;
 		Texture2D pipesTextDown;
+		bool scored;
 	};
 
+	extern Enemy enemy[maxEnemys];
 	void InitEnemy();
 	void CreateEnemy();
 	void UpdateEnemy();
