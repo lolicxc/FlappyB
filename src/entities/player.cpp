@@ -7,14 +7,17 @@ namespace flappy
 	void InitPlayer(Player& player)
 
 	{
+		player.playerText = LoadTexture("res/fish.png");
+		player.player2Text = LoadTexture("res/fish2.png");
 		player.playerFigure.x = 200.0f;
 		player.playerFigure.y = 300.0f;
 		player.playerFigure.width = 30.0f;
 		player.playerFigure.height = 40.0f;
-
-		player.playerHitbox.rad = 25.0f;
-		player.playerHitbox.pos.x = 200.0f + player.playerFigure.width/2;
-		player.playerHitbox.pos.y = 300.0f + player.playerFigure.height/2;
+	
+		player.playerHitbox.x = player.playerFigure.x + 5;  
+		player.playerHitbox.y = player.playerFigure.y + 5;
+		player.playerHitbox.width = player.playerFigure.width - 10;
+		player.playerHitbox.height = player.playerFigure.height - 10;
 
 		player.lives = 1;
 		player.speed = 300.0f;
@@ -25,71 +28,73 @@ namespace flappy
 	}
 	void InputPlayer(Player& player)
 	{
-		if (IsKeyDown(KEY_W))
-		{
-			player.moveUp = true;
-		}
-
-		if (!IsKeyDown(KEY_W))
-		{
-			player.moveUp = false;
-		}
+		player.moveUp = IsKeyPressed(KEY_W);
 	}
 
 	void InputPlayer2(Player& player)
 	{
-		if (IsKeyDown(KEY_UP))
-		{
-			player.moveUp = true;
-		}
+		player.moveUp = IsKeyPressed(KEY_UP);
 
-		if (!IsKeyDown(KEY_UP))
-		{
-			player.moveUp = false;
-		}
 	}
 
 	void UpdatePlayer(Player& player)
 	{
 
-		float gravity = 1000.0f;   // fuerza de gravedad
-		float jumpForce = -350.0f; // impulso hacia arriba
+		float gravity = 1000.0f;   
+		float jumpForce = -450.0f; 
 
-		// aplicar gravedad siempre
+	
 		player.speed += gravity * GetFrameTime();
 
-		// si salta, aplicar impulso hacia arriba
+		// salto
 		if (player.moveUp)
 		{
 			player.speed = jumpForce;
+			player.moveUp = false; 
 		}
 
-		// actualizar posición según velocidad
 		player.playerFigure.y += player.speed * GetFrameTime();
 
-		// mantener hitbox alineado
-		player.playerHitbox.pos.y = player.playerFigure.y;
+		CheckArenaCollision(player);
+
+		player.playerHitbox.x = player.playerFigure.x + 5;
+		player.playerHitbox.y = player.playerFigure.y + 5;
+
 	}
 	void DrawPlayer(Player player)
 	{
-		DrawRectangle(static_cast <int>(player.playerFigure.x),
-			static_cast <int>(player.playerFigure.y),
-			static_cast <int>(player.playerFigure.width),
-			static_cast <int>(player.playerFigure.height), RED);
-		DrawCircleLines(static_cast <int>(player.playerHitbox.pos.x),
-			static_cast <int>(player.playerHitbox.pos.y),
-			static_cast <float>(player.playerHitbox.rad), RED);
+
+		if (!player.isAlive)
+			return;
+
+		DrawTexture(player.playerText, (int)player.playerFigure.x, (int)player.playerFigure.y, WHITE);
+
+	}
+
+	void DrawPlayer2(Player player)
+	{
+		if (!player.isAlive)
+			return;
+
+		DrawTexture(player.player2Text, (int)player.playerFigure.x, (int)player.playerFigure.y, WHITE);
 	}
 
 	void CheckArenaCollision(Player& player)
 	{
-		if (player.playerFigure.y <= 0.0f)
+		// límite superior
+		if (player.playerFigure.y < 0.0f)
 		{
-			player.playerFigure.y += player.playerFigure.height;
+			player.playerFigure.y = 0.0f;
+			player.speed = 0.0f; // detener impulso hacia arriba
 		}
-		if (player.playerFigure.y + player.playerFigure.height >= GetScreenHeight())
+
+		// límite inferior: perder si toca
+		if (player.playerFigure.y + player.playerFigure.height > GetScreenHeight())
 		{
-			player.playerGotHit = true;
+			player.playerFigure.y = GetScreenHeight() - player.playerFigure.height;
+			player.speed = 0.0f;
+			player.isAlive = false;      // marcar jugador como muerto
+			player.playerGotHit = true;  // opcional, para efectos de golpe
 		}
 	}
 }

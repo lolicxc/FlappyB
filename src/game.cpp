@@ -154,7 +154,7 @@ namespace flappy
 			player2.isAlive = true;
 
 			InitEnemy();
-			gameStats.gameStatus = SceneStatus::FIRSTGAME;
+			gameStats.gameStatus = SceneStatus::GAMEMENU;
 			break;
 		case SceneStatus::GAMEEND:
 
@@ -203,7 +203,7 @@ namespace flappy
 		case SceneStatus::GAMEPLAY2P:
 			DrawBackGround();
 			DrawPlayer(player);
-			DrawPlayer(player2);
+			DrawPlayer2(player2);
 			DrawEnemy();
 			break;
 		case SceneStatus::GAMEPAUSE:

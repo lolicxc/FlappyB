@@ -88,7 +88,7 @@ namespace flappy
 				&& IsMouseOverButton(buttons.playButton))
 			{
 				//PlaySFX(audio.clickSound);
-				gameStats.gameStatus = SceneStatus::RESETGAME;
+				gameStats.gameStatus = SceneStatus::FIRSTGAME;
 			}
 			else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && IsMouseOverButton(buttons.play2PButton))
 			{
@@ -151,20 +151,17 @@ namespace flappy
 				//PlaySFX(audio.clickSound);
 				gameStats.gameStatus = SceneStatus::GAMEMENU;
 			}
-			if (!IsKeyPressed(KEY_SPACE)
-				&& IsKeyReleased(KEY_SPACE))
+			if (IsKeyPressed(KEY_SPACE))
 			{
-				//PlaySFX(audio.clickSound);
 				gameStats.gameStatus = SceneStatus::GAMEPLAY;
 			}
 			break;
 
 		case SceneStatus::GAMEPLAY:
 
-			if (!IsKeyPressed(KEY_SPACE) && IsKeyReleased(KEY_SPACE))
+			if (IsKeyPressed(KEY_SPACE))
 			{
-				//PlaySFX(audio.clickSound);
- 				gameStats.gameStatus = SceneStatus::GAMEPAUSE;
+				gameStats.gameStatus = SceneStatus::GAMEPAUSE;
 			}
 			break;
 
@@ -254,7 +251,8 @@ namespace flappy
 
 		case SceneStatus::FIRSTGAME:
 
-			DrawPause(gameStats, buttons);
+			DrawText("Press SPACE to START", 300, 300, 40, WHITE);
+			DrawButton(buttons.backMenuButton, buttons.backToMenuButtState);
 			break;
 
 		case SceneStatus::GAMEPLAY:

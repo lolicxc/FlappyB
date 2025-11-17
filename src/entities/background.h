@@ -6,7 +6,7 @@ namespace flappy
 {
 	struct BackGround
 	{
-		Texture2D  part1;
+		
 		Texture2D  part2;
 		Texture2D  part3;
 		Texture2D  part4;

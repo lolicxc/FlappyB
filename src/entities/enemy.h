@@ -13,11 +13,13 @@ namespace flappy
 		float speed;
 
 		bool isAlive;
+		Texture2D pipesTextUp;
+		Texture2D pipesTextDown;
 	};
 
 	void InitEnemy();
 	void CreateEnemy();
 	void UpdateEnemy();
 	void DrawEnemy();
-	void CheckPlayerColision(Circle playerHitBox, bool& isHit);
+	void CheckPlayerColision(Rectangle playerHitBox, bool& isHit);
 }

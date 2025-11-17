@@ -15,39 +15,48 @@ namespace flappy
 
 	void InitEnemy()
 	{
+		
 		for (int i = 0; i < maxEnemys; i++)
 		{
-			enemy[i].enemyFigureDown.x = 0.0f;
-			enemy[i].enemyFigureDown.y = 0.0f;
-			enemy[i].enemyFigureDown.width = 50.0f;
-			enemy[i].enemyFigureDown.height = 600.0f;
+			enemy[i].pipesTextUp = LoadTexture("res/pipe.png");
+			enemy[i].pipesTextDown = LoadTexture("res/pipeDown.png");
 
-			enemy[i].enemyFigureUp.x = 0.0f;
-			enemy[i].enemyFigureUp.y = 0.0f;
-			enemy[i].enemyFigureUp.width = 50.0f;
-			enemy[i].enemyFigureUp.height = 600.0f;
+			enemy[i].enemyFigureUp = { 0, 0,
+				(float)enemy[i].pipesTextUp.width,
+				(float)enemy[i].pipesTextUp.height
+			};
 
-			enemy[i].isAlive = false;
+			enemy[i].enemyFigureDown = { 0, 0,
+				(float)enemy[i].pipesTextDown.width,
+				(float)enemy[i].pipesTextDown.height
+			};
+
 			enemy[i].speed = 200.0f;
+			enemy[i].isAlive = false;
 		}
 	}
 
 	void CreateEnemy()
 	{
-		float auxPosX = 50.0f;
-		int minRangeYPos = 200;
-		int maxRangeYPos = 700;
-		int minEmptySpace = 170;
+		float gap = 230.0f;
+		int minY = 100;
+		int maxY = 350;
 
 		for (int i = 0; i < maxEnemys; i++)
 		{
 			if (!enemy[i].isAlive)
 			{
-				enemy[i].enemyFigureDown.x = GetScreenWidth() + auxPosX;
-				enemy[i].enemyFigureDown.y = static_cast<float>(GetRandomValue(minRangeYPos, maxRangeYPos));
+				float topHeight = (float)GetRandomValue(minY, maxY);
 
-				enemy[i].enemyFigureUp.x = enemy[i].enemyFigureDown.x;
-				enemy[i].enemyFigureUp.y = (enemy[i].enemyFigureDown.y - enemy[i].enemyFigureUp.height - minEmptySpace);
+				float startX = (float)GetScreenWidth() + 200;
+
+				// tubo arriba
+				enemy[i].enemyFigureUp.x = startX;
+				enemy[i].enemyFigureUp.y = topHeight - enemy[i].enemyFigureUp.height;
+
+				// tubo abajo
+				enemy[i].enemyFigureDown.x = startX;
+				enemy[i].enemyFigureDown.y = topHeight + gap;
 
 				enemy[i].isAlive = true;
 				break;
@@ -80,15 +89,9 @@ namespace flappy
 		{
 			if (enemy[i].isAlive)
 			{
-				DrawRectangle(static_cast <int>(enemy[i].enemyFigureDown.x),
-					static_cast <int>(enemy[i].enemyFigureDown.y),
-					static_cast <int>(enemy[i].enemyFigureDown.width),
-					static_cast <int>(enemy[i].enemyFigureDown.height), RED);
-
-				DrawRectangle(static_cast <int>(enemy[i].enemyFigureUp.x),
-					static_cast <int>(enemy[i].enemyFigureUp.y),
-					static_cast <int>(enemy[i].enemyFigureUp.width),
-					static_cast <int>(enemy[i].enemyFigureUp.height), RED);
+				DrawTexture(enemy[i].pipesTextUp, (int)enemy[i].enemyFigureUp.x, (int)enemy[i].enemyFigureUp.y, WHITE);
+		
+				DrawTexture(enemy[i].pipesTextDown, (int)enemy[i].enemyFigureDown.x, (int)enemy[i].enemyFigureDown.y, WHITE);
 			}
 		}
 	}
@@ -101,25 +104,31 @@ namespace flappy
 		}
 	}
 
-	void CheckPlayerColision(Circle playerHitBox, bool& isHit)
+	void CheckPlayerColision(Rectangle playerHitBox, bool& isHit)
 	{
 		for (int i = 0; i < maxEnemys; i++)
 		{
-			if (enemy[i].isAlive
-				&& playerHitBox.pos.x + playerHitBox.rad >= enemy[i].enemyFigureDown.x
-				&& playerHitBox.pos.y + playerHitBox.rad >= enemy[i].enemyFigureDown.y
-				&& playerHitBox.pos.x - playerHitBox.rad <= enemy[i].enemyFigureDown.x + enemy[i].enemyFigureDown.width)
+			if (enemy[i].isAlive)
 			{
-				isHit = true;
-			}
+				// colisión con el tubo de abajo
+				if (playerHitBox.x < enemy[i].enemyFigureDown.x + enemy[i].enemyFigureDown.width &&
+					playerHitBox.x + playerHitBox.width > enemy[i].enemyFigureDown.x &&
+					playerHitBox.y < enemy[i].enemyFigureDown.y + enemy[i].enemyFigureDown.height &&
+					playerHitBox.y + playerHitBox.height > enemy[i].enemyFigureDown.y)
+				{
+					isHit = true;
+				}
 
-			else if (enemy[i].isAlive
-				&& playerHitBox.pos.x + playerHitBox.rad >= enemy[i].enemyFigureUp.x
-				&& playerHitBox.pos.y + playerHitBox.rad <= enemy[i].enemyFigureUp.y + enemy[i].enemyFigureUp.height
-				&& playerHitBox.pos.x - playerHitBox.rad <= enemy[i].enemyFigureUp.x + enemy[i].enemyFigureUp.width)
-			{
-				isHit = true;
+				// colisión con el tubo de arriba
+				else if (playerHitBox.x < enemy[i].enemyFigureUp.x + enemy[i].enemyFigureUp.width &&
+					playerHitBox.x + playerHitBox.width > enemy[i].enemyFigureUp.x &&
+					playerHitBox.y < enemy[i].enemyFigureUp.y + enemy[i].enemyFigureUp.height &&
+					playerHitBox.y + playerHitBox.height > enemy[i].enemyFigureUp.y)
+				{
+					isHit = true;
+				}
 			}
 		}
 	}
+
 }
