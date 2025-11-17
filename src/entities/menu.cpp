@@ -5,9 +5,6 @@ namespace flappy
 	Vector2 recSize = { 90.0f, 50.0f };
 	bool isOnButton = false;
 
-	bool IsMouseOverButton(Rectangle buttonRec);
-	int GetButtonState(Rectangle button);
-	void DrawButton(Rectangle button, int state);
 
 	void DrawMainMenu(GameStats gameStats, MenuButtons buttons);
 	//void DrawRulesMenu(GameStats gameStats, MenuButtons buttons);

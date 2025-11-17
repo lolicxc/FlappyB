@@ -3,10 +3,13 @@
 namespace flappy
 {
     struct Player; 
+    extern int score1;
+    extern int score2;
 
     void InitScore();
-    void UpdateScore(Player& player);
+    void UpdateScore1(Player& player);
+    void UpdateScore2(Player& player);
     void ResetScore();
-    int GetScore();
     void DrawScore();
+    void DrawScore2();
 }

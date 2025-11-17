@@ -21,7 +21,8 @@ namespace flappy
 		GAMEPAUSE,
 		RESETGAME,
 		GAMEEND,
-		SIMEND
+		GAMEOVER1,
+		GAMEOVER2,
 	};
 
 	struct GameStats

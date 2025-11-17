@@ -4,7 +4,8 @@
 
 namespace flappy
 {
-	int score = 0;
+	int score1 = 0;
+	int score2 = 0;
 	Texture2D scoreText;
 
 	void InitScore()
@@ -12,7 +13,7 @@ namespace flappy
 		scoreText = LoadTexture("res/score.png");
 	}
 
-	void UpdateScore(Player& player)
+	void UpdateScore1(Player& player)
 	{
 		for (int i = 0; i < maxEnemys; i++)
 		{
@@ -23,7 +24,24 @@ namespace flappy
 
 			if (!enemy[i].scored && playerX > pipeRight)
 			{
-				score++;
+				score1++;
+				enemy[i].scored = true;
+			}
+		}
+	}
+
+	void UpdateScore2(Player& player)
+	{
+		for (int i = 0; i < maxEnemys; i++)
+		{
+			if (!enemy[i].isAlive) continue;
+
+			float pipeRight = enemy[i].enemyFigureDown.x + enemy[i].enemyFigureDown.width;
+			float playerX = player.playerFigure.x;
+
+			if (!enemy[i].scored && playerX > pipeRight)
+			{
+				score2++;
 				enemy[i].scored = true;
 			}
 		}
@@ -31,22 +49,23 @@ namespace flappy
 
 	void ResetScore()
 	{
-		score = 0;
-
+		score1 = 0;
+		score2 = 0;
 		for (int i = 0; i < maxEnemys; i++)
 		{
 			enemy[i].scored = false;
 		}
 	}
 
-	int GetScore()
-	{
-		return score;
-	}
 	void DrawScore()
 	{
 
 		DrawTexture(scoreText, 10, 10, WHITE);
-		DrawText(TextFormat("%i", score), 150, 20, 40, BLACK);
+		DrawText(TextFormat("%i", score1), 150, 20, 40, BLACK);
+	}
+	void DrawScore2()
+	{
+		DrawTexture(scoreText, 800, 10, WHITE);
+		DrawText(TextFormat("%i", score2), 940, 20, 40, BLACK);
 	}
 }

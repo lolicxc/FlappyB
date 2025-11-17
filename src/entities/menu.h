@@ -34,4 +34,8 @@ namespace flappy
 	void InitButtons(MenuButtons& buttons);
 	void UpdateSceneMenus(GameStats& gameStats, MenuButtons& buttons);
 	void DrawMenuTypeScene(GameStats gameStats, MenuButtons buttons);
+	bool IsMouseOverButton(Rectangle buttonRec);
+	int GetButtonState(Rectangle button);
+	void DrawButton(Rectangle button, int state);
+
 }

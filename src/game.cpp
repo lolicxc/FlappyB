@@ -7,6 +7,8 @@
 #include "entities/menu.h"
 #include "entities/background.h"
 #include "score.h"
+#include "gameOverScreen.h"
+
 using namespace std;
 
 namespace flappy
@@ -78,7 +80,10 @@ namespace flappy
 			break;
 		case SceneStatus::GAMEEND:
 			break;
-
+		case SceneStatus::GAMEOVER1:
+			break;
+		case SceneStatus::GAMEOVER2:
+			break;
 		default:
 			break;
 		}
@@ -106,22 +111,22 @@ namespace flappy
 		case SceneStatus::GAMEPLAY:
 
 			UpdateBackGorund();
+			UpdateScore1(player);
 			UpdatePlayer(player);
 			UpdateEnemy();
 			UpdateSceneMenus(gameStats, buttons);
 			CheckPlayerColision(player.playerHitbox, player.playerGotHit);
-			UpdateScore(player);
 
 			if (player.playerGotHit)
 			{
-				gameStats.gameStatus = SceneStatus::RESETGAME;
+				gameStats.gameStatus = SceneStatus::GAMEOVER1;
 			}
 			break;
 		case SceneStatus::GAMEPLAY2P:
 			UpdateBackGorund();
-
 			if (player.isAlive)
 			{
+				UpdateScore1(player);
 				UpdatePlayer(player);
 				CheckPlayerColision(player.playerHitbox, player.playerGotHit);
 				if (player.playerGotHit)
@@ -130,6 +135,7 @@ namespace flappy
 
 			if (player2.isAlive)
 			{
+				UpdateScore2(player2);
 				UpdatePlayer(player2);
 				CheckPlayerColision(player2.playerHitbox, player2.playerGotHit);
 				if (player2.playerGotHit)
@@ -141,7 +147,7 @@ namespace flappy
 
 			if (!player.isAlive && !player2.isAlive)
 			{
-				gameStats.gameStatus = SceneStatus::RESETGAME;
+				gameStats.gameStatus = SceneStatus::GAMEOVER2;
 			}
 			break;
 		case SceneStatus::GAMEPAUSE:
@@ -163,7 +169,13 @@ namespace flappy
 			UpdateSceneMenus(gameStats, buttons);
 
 			break;
+		case SceneStatus::GAMEOVER1:
 
+			UpdateGameOverScreen(gameStats, buttons);
+			break;
+		case SceneStatus::GAMEOVER2:
+			UpdateGameOverScreen(gameStats, buttons);
+			break;
 		default:
 			break;
 		}
@@ -208,6 +220,8 @@ namespace flappy
 			DrawPlayer(player);
 			DrawPlayer2(player2);
 			DrawEnemy();
+			DrawScore();
+			DrawScore2();
 			break;
 		case SceneStatus::GAMEPAUSE:
 			DrawBackGround();
@@ -228,6 +242,12 @@ namespace flappy
 			DrawEnemy();
 			DrawMenuTypeScene(gameStats, buttons);
 
+			break;
+		case SceneStatus::GAMEOVER1:
+			DrawGameOver1P(score1);
+			break;
+		case SceneStatus::GAMEOVER2:
+			DrawGameOver2P(score1,score2);
 			break;
 
 		default:
