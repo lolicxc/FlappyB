@@ -1,15 +1,17 @@
 #include "menu.h"
+#include "../creditsScreen.h"
 
 namespace flappy
 {
 	Vector2 recSize = { 90.0f, 50.0f };
 	bool isOnButton = false;
-
+	Texture2D pauseText;
 
 	void DrawMainMenu(GameStats gameStats, MenuButtons buttons);
 	//void DrawRulesMenu(GameStats gameStats, MenuButtons buttons);
-	void DrawCreditsMenu(GameStats gameStats, MenuButtons buttons);
 	void DrawPause(GameStats gameStats, MenuButtons buttons);
+
+	bool isPaused = false;
 
 	bool IsMouseOverButton(Rectangle buttonRec)
 	{
@@ -27,16 +29,16 @@ namespace flappy
 	}
 	void InitButtons(MenuButtons& buttons)
 	{
-		buttons.buttonSprite = LoadTexture("res/Botones/DefaultButtonSprite.png");
-
-		float menuButtonsPosX = 505.0f;
+		buttons.buttonSprite = LoadTexture("res/button.png");
+		buttons.mainmenu = LoadTexture("res/mainmenu.png");
+		float menuButtonsPosX = GetScreenWidth() / 2;
 		float backButtonPosX = 100.0f;
 		float backButtonPosY = 720.0f;
 
-		float resetButtonPosX = 335.0f;
-		float resetButtonPosY = 660.0f;
-		float goMenuButtonPosX = 697.0f;
-		float goMenuButtonPosY = 660.0f;
+		float resetButtonPosX = 100.0f;
+		float resetButtonPosY = 720.0f;
+		float goMenuButtonPosX = 100.0f;
+		float goMenuButtonPosY = 720.0f;
 
 		buttons.playButtState = 0;
 		//buttons.rulesButtState = 0;
@@ -48,10 +50,10 @@ namespace flappy
 		float buttonWidth = 110.0f;
 		float buttonHeight = 72.0f;
 
-		float playButtonPosy = 290.0f;
+		float playButtonPosy = 320.0f;
 		//float rulesButtonPosy = 370.0f;
-		float play2PButtonPosy = 370.0f;
-		float creditButtonPosy = 450.0f;
+		float play2PButtonPosy = 430.0f;
+		float creditButtonPosy = 550.0f;
 
 		//posiciones de botones y tamanio de hitbox
 		buttons.playButton = { menuButtonsPosX,playButtonPosy,buttonWidth,buttonHeight };
@@ -122,6 +124,7 @@ namespace flappy
 
 		case SceneStatus::GAMECREDITS:
 
+			UpdateCredits(gameStats);
 			buttons.backButtState = GetButtonState(buttons.backButton);
 
 			if (!IsMouseOverButton(buttons.backButton))
@@ -158,35 +161,34 @@ namespace flappy
 
 			if (IsKeyPressed(KEY_SPACE))
 			{
+				isPaused = true;
+				gameStats.previousGameplayMode = gameStats.gameStatus; // guardo modo 1P
 				gameStats.gameStatus = SceneStatus::GAMEPAUSE;
 			}
 			break;
 
 		case SceneStatus::GAMEPLAY2P:
-
+			if (IsKeyPressed(KEY_SPACE))
+			{
+				isPaused = true;
+				gameStats.previousGameplayMode = gameStats.gameStatus; // guardo modo 2P
+				gameStats.gameStatus = SceneStatus::GAMEPAUSE;
+			}
 			break;
 		case SceneStatus::GAMEPAUSE:
 
 			buttons.backToMenuButtState = GetButtonState(buttons.backMenuButton);
 			buttons.resetButtState = GetButtonState(buttons.resetButton);
 
-			if (!IsMouseOverButton(buttons.backMenuButton) && !IsMouseOverButton(buttons.resetButton))
-				isOnButton = false;
+			if (IsKeyPressed(KEY_SPACE))
+				isPaused = false;
 
-			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && IsMouseOverButton(buttons.backMenuButton))
-			{
-				//PlaySFX(audio.clickSound);
-				gameStats.gameStatus = SceneStatus::GAMEMENU;
-			}
+			if (!isPaused)
+				gameStats.gameStatus = gameStats.previousGameplayMode; 
+
 			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && IsMouseOverButton(buttons.resetButton))
 			{
-				//PlaySFX(audio.clickSound);
 				gameStats.gameStatus = SceneStatus::RESETGAME;
-			}
-			if (!IsKeyPressed(KEY_SPACE) && IsKeyReleased(KEY_SPACE))
-			{
-				//PlaySFX(audio.clickSound);
-				gameStats.gameStatus = SceneStatus::GAMEPLAY;
 			}
 			break;
 
@@ -243,14 +245,24 @@ namespace flappy
 
 		case SceneStatus::GAMECREDITS:
 
-			DrawCreditsMenu(gameStats, buttons);
+			DrawCreditsMenu();
+
 			break;
 
 		case SceneStatus::FIRSTGAME:
+		{
 
-			DrawText("Press SPACE to START", 300, 300, 40, WHITE);
-			DrawButton(buttons.backMenuButton, buttons.backToMenuButtState);
+			Vector2 pos = { 300, 100 };
+			float fontSize = 50.0f;
+			float spacing = 2.0f;
+			Color tint = WHITE;
+
+			DrawTextEx(flappy::paperFont, "Press SPACE to START", pos, fontSize, spacing, tint);
+			DrawButton(buttons.buttonSprite, buttons.backMenuButton, buttons.backToMenuButtState);
+			DrawTextEx(flappy::paperFont, "Main menu", {10, 700}, 40, 1, BLACK);
+
 			break;
+		}
 
 		case SceneStatus::GAMEPLAY:
 
@@ -275,45 +287,50 @@ namespace flappy
 			break;
 		}
 	}
+	Vector2 GetTextPositionCenteredOnButton(const Rectangle& button, const char* text, Font font, float fontSize, float spacing)
+	{
+		Vector2 textSize = MeasureTextEx(font, text, fontSize, spacing);
+		Vector2 pos;
+		pos.x = button.x - textSize.x / 2.0f;
+		pos.y = button.y - textSize.y / 2.0f;
+		return pos;
+	}
 	void DrawMainMenu(GameStats gameStats, MenuButtons buttons)
 	{
 		if (gameStats.gameStatus == SceneStatus::GAMEMENU)
 		{
-			int lineText1PosX = GetScreenWidth() / 2 - 150;
-			int LineText1PosY = 150;
-
-			int LineText2PosX = GetScreenWidth() / 2 - 30;
-			int LineText2PosY = 280;
-
-			/*int LineText3PosX = GetScreenWidth() / 2 - 35;
-			int LineText3PosY = 357;*/
-
-			int LineText4PosX = GetScreenWidth() / 2 - 47;
-			int LineText4PosY = 437;
-
-			int LineText5PosX = 360;
-			int LineText5PosY = 750;
-
-			int titleFontSize = 50;
-			int defaultFontSize = 20;
+			
+			int defaultFontSize = 45;  
 			int exitFontSize = 15;
 
-			Color textColor = RED;
+			float spacing = 2.0f; 
+			Color textColor = BLACK;
 
-			DrawButton(buttons.playButton, buttons.playButtState);
-			//DrawButton(buttons.rulesButton, buttons.rulesButtState);
-			DrawButton(buttons.play2PButton, buttons.play2PButtState);
-			DrawButton(buttons.creditsButton, buttons.creditsButtState);
+			DrawTexture(buttons.mainmenu, 0, 0, WHITE);
+			DrawButton(buttons.buttonSprite, buttons.playButton, buttons.playButtState);
+			DrawButton(buttons.buttonSprite, buttons.play2PButton, buttons.play2PButtState);
+			DrawButton(buttons.buttonSprite, buttons.creditsButton, buttons.creditsButtState);
 
-			DrawText("ARACNOIDS", lineText1PosX, LineText1PosY, titleFontSize, textColor);
-			DrawText("Play", LineText2PosX, LineText2PosY, defaultFontSize, textColor);
-			DrawText("Play 2P", GetScreenWidth() / 2 - 45, 360, defaultFontSize, textColor);
-			//DrawText("Rules", LineText3PosX, LineText3PosY, defaultFontSize, textColor);
-			DrawText("Credits", LineText4PosX, LineText4PosY, defaultFontSize, textColor);
+			Vector2 pos;
 
-			DrawText("Press ESC at ANY momment to CLOSE the game", LineText5PosX, LineText5PosY, exitFontSize, textColor);
+			//Play
+			pos = GetTextPositionCenteredOnButton(buttons.playButton, "Single player", flappy::paperFont, (float)gameStats.fontSize, 2.0f);
+			pos.x += 50;
+			DrawTextEx(flappy::paperFont, "Single player", pos, defaultFontSize, 2.0f, BLACK);
+
+			//Play 2P
+			pos = GetTextPositionCenteredOnButton(buttons.play2PButton, "Multiplayer", flappy::paperFont, (float)gameStats.fontSize, 2.0f);
+			pos.x += 50;
+			DrawTextEx(flappy::paperFont, "Multiplayer", pos, defaultFontSize, 2.0f, BLACK);
+
+			//Credits
+			pos = GetTextPositionCenteredOnButton(buttons.creditsButton, "Credits", flappy::paperFont, (float)gameStats.fontSize, 2.0f);
+			pos.x += 20;
+			DrawTextEx(flappy::paperFont, "Credits", pos, defaultFontSize, 2.0f, BLACK);
+
 		}
 	}
+
 	/*void DrawRulesMenu(GameStats gameStats, MenuButtons buttons)
 	{
 		if (gameStats.gameStatus == SceneStatus::GAMERULES)
@@ -377,116 +394,26 @@ namespace flappy
 			DrawText("Back", LineText0PosX, LineText0PosY, exitFontSize, textColor);
 		}
 	}*/
-	void DrawCreditsMenu(GameStats gameStats, MenuButtons buttons)
-	{
-		if (gameStats.gameStatus == SceneStatus::GAMECREDITS)
-		{
-			int titleFontSize = 50;
-			int defaultFontSize = 20;
-			int exitFontSize = 20;
-
-			int LineText1PosX = GetScreenWidth() / 2 - 100;
-			int LineText1PosY = 100;
-
-			int LineText2PosX = 100;
-			int LineText2PosY = 230;
-
-			int LineText3PosX = 100;
-			int LineText3PosY = 280;
-
-			int LineText4PosX = 100;
-			int LineText4PosY = 330;
-
-			int LineText0PosX = 75;
-			int LineText0PosY = 705;
-
-			Color textColor = RED;
-
-			DrawButton(buttons.backButton, buttons.backButtState);
-
-			DrawText("CREDITS", LineText1PosX, LineText1PosY, titleFontSize, textColor);
-
-			DrawText("-Game made by Francisco Jonas and Dolores Caparroz.",
-				LineText2PosX, LineText2PosY, defaultFontSize, textColor);
-			DrawText("-Game assests made UNKnown",
-				LineText3PosX, LineText3PosY, defaultFontSize, textColor);
-			DrawText("-Special thanks to, Stefano Juan Cvitanich and Sergio Baretto",
-				LineText4PosX, LineText4PosY, defaultFontSize, textColor);
-
-			DrawText("Back", LineText0PosX, LineText0PosY, exitFontSize, textColor);
-		}
-	}
+	
 	void DrawPause(GameStats gameStats, MenuButtons buttons)
 	{
-		if (gameStats.gameStatus == SceneStatus::GAMEPAUSE
-			|| gameStats.gameStatus == SceneStatus::FIRSTGAME
-			|| gameStats.gameStatus == SceneStatus::GAMEEND)
-		{
-			int titleFontSize = 50;
-			int defaultFontSize = 20;
+		if (gameStats.gameStatus != SceneStatus::GAMEPAUSE)
+			return; // Salir si no estamos en pausa
+		int defaultFontSize = 50;
 
-			int LineText1PosX = 350;
-			int LineText1PosY = 100;
+		Color textColor = BLACK;
+		pauseText = LoadTexture("res/pause.png");
+		// Instrucción
+		DrawTexture(pauseText, 0, 0, WHITE);
+		DrawTextEx(flappy::paperFont, "Press SPACEBAR to resume", { 250, 300 }, defaultFontSize, 1, textColor);
 
-			int LineText2PosX = 400;
-			int LineText2PosY = 230;
-
-			int LineText3PosX = 450;
-			int LineText3PosY = 280;
-
-			int LineText4PosX = 300;
-			int LineText4PosY = 650;
-
-			int LineText5PosX = 650;
-			int LineText5PosY = 650;
-
-			int LineText6PosX = 430;
-			int LineText6PosY = 280;
-
-			string pauseText = "GAME PAUSE";
-			string keyInstructionText = "Press SPACEBAR key";
-			string continueText = "To RESUME";
-			string startText = "To START Game";
-			string resetText = "RESET";
-			string menuText = "Go MENU";
-			string endText = "GAME OVER";
-
-			Color textColor = RED;
-
-			DrawText("Press SPACEBAR key", LineText2PosX, LineText2PosY, defaultFontSize, textColor);
-
-			if (gameStats.gameStatus == SceneStatus::GAMEPAUSE)
-			{
-				DrawButton(buttons.resetButton, buttons.resetButtState);
-				DrawButton(buttons.backMenuButton, buttons.backToMenuButtState);
-
-				DrawText("GAME PAUSE", LineText1PosX, LineText1PosY, titleFontSize, textColor);
-				DrawText("To RESUME", LineText3PosX, LineText3PosY, defaultFontSize, textColor);
-				DrawText("RESET", LineText4PosX, LineText4PosY, defaultFontSize, textColor);
-				DrawText("Go MENU", LineText5PosX, LineText5PosY, defaultFontSize, textColor);
-			}
-
-			if (gameStats.gameStatus == SceneStatus::FIRSTGAME)
-			{
-				DrawButton(buttons.backMenuButton, buttons.backToMenuButtState);
-
-				DrawText("GAME PAUSE", LineText1PosX, LineText1PosY, titleFontSize, textColor);
-
-				DrawText("To START Game", LineText6PosX, LineText6PosY, defaultFontSize, textColor);
-				DrawText("Go MENU", LineText5PosX, LineText5PosY, defaultFontSize, textColor);
-			}
-
-			if (gameStats.gameStatus == SceneStatus::GAMEEND)
-			{
-				DrawButton(buttons.resetButton, buttons.resetButtState);
-				DrawButton(buttons.backMenuButton, buttons.backToMenuButtState);
-
-				DrawText("GAME OVER", LineText1PosX, LineText1PosY, titleFontSize, textColor);
-				DrawText("RESET", LineText4PosX, LineText4PosY, defaultFontSize, textColor);
-				DrawText("Go MENU", LineText5PosX, LineText5PosY, defaultFontSize, textColor);
-			}
-		}
+		// Botones
+		DrawButton(buttons.buttonSprite, buttons.resetButton, buttons.resetButtState);
+		DrawButton(buttons.buttonSprite, buttons.backMenuButton, buttons.backToMenuButtState);
+		DrawTextEx(flappy::paperFont, "Main menu", { 10, 700 }, 40, 1, BLACK);
+	
 	}
+
 
 	int GetButtonState(Rectangle button)
 	{
@@ -510,26 +437,22 @@ namespace flappy
 		}
 		return 0;
 	}
-	void DrawButton(Rectangle button, int state)
+	void DrawButton(Texture2D buttonSprite, Rectangle button, int state)
 	{
-		// dibujado de sprite y escalado
-		/*float  scale = 2.5;
-		float frameWidth = static_cast<float>(sprite.width) / 3.0f;
-		float frameHeight = static_cast<float>(spriteheight);
 
-		Rectangle spriteRec = { state * frameWidth, 0, frameWidth,frameHeight };
-		Vector2 position = { button.x,button.y };
 
-		Rectangle destRec = { button.x,button.y,frameWidth * scale,frameHeight * scale };
-		Vector2 origin = { destRec.width / 2, destRec.height / 2 };
+		float frameWidth = (float)buttonSprite.width / 2.0f;
+		float frameHeight = (float)buttonSprite.height;
+		float offsetX = 30.0f;
 
-		DrawTexturePro(sprite, spriteRec, destRec, origin, 0.0, WHITE);*/
+		Rectangle source = { state * frameWidth, 0, frameWidth, frameHeight };
 
-		if (state == 1)
-		{
-			DrawRectanglePro(button, { button.width / 2,button.height / 2 }, 0.0f, GRAY);
-		}
-		else
-			DrawRectanglePro(button, { button.width/2,button.height/2 }, 0.0f, LIGHTGRAY);
+		Rectangle dest = { button.x - frameWidth / 2 + offsetX, button.y - frameHeight / 2,
+						   frameWidth, frameHeight };
+
+
+
+		Vector2 origin = { 0, 0 };
+		DrawTexturePro(buttonSprite, source, dest, origin, 0, WHITE);
 	}
 }

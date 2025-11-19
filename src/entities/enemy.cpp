@@ -62,7 +62,8 @@ namespace flappy
 				enemy[i].enemyFigureDown.y = topHeight + gap;
 
 				enemy[i].isAlive = true;
-				enemy[i].scored = false;
+				enemy[i].scored1 = false;
+				enemy[i].scored2 = false;
 				break;
 			}
 		}

@@ -22,10 +22,10 @@ namespace flappy
 			float pipeRight = enemy[i].enemyFigureDown.x + enemy[i].enemyFigureDown.width;
 			float playerX = player.playerFigure.x;
 
-			if (!enemy[i].scored && playerX > pipeRight)
+			if (!enemy[i].scored1 && playerX > pipeRight)
 			{
 				score1++;
-				enemy[i].scored = true;
+				enemy[i].scored1 = true;
 			}
 		}
 	}
@@ -39,10 +39,10 @@ namespace flappy
 			float pipeRight = enemy[i].enemyFigureDown.x + enemy[i].enemyFigureDown.width;
 			float playerX = player.playerFigure.x;
 
-			if (!enemy[i].scored && playerX > pipeRight)
+			if (!enemy[i].scored2 && playerX > pipeRight)
 			{
 				score2++;
-				enemy[i].scored = true;
+				enemy[i].scored2 = true;
 			}
 		}
 	}
@@ -53,7 +53,8 @@ namespace flappy
 		score2 = 0;
 		for (int i = 0; i < maxEnemys; i++)
 		{
-			enemy[i].scored = false;
+			enemy[i].scored1 = false;
+			enemy[i].scored2 = false;
 		}
 	}
 

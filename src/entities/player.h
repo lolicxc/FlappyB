@@ -18,6 +18,7 @@ namespace flappy
 		bool isAlive;
 		Texture2D playerText;
 		Texture2D player2Text;
+		float rotation;
 	};
 
 	void InitPlayer(Player& player);

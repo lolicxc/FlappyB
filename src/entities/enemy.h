@@ -17,7 +17,8 @@ namespace flappy
 		bool isAlive;
 		Texture2D pipesTextUp;
 		Texture2D pipesTextDown;
-		bool scored;
+		bool scored1;
+		bool scored2;
 	};
 
 	extern Enemy enemy[maxEnemys];

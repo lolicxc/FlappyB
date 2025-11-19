@@ -12,6 +12,7 @@ namespace flappy
 {
 	struct MenuButtons
 	{
+		Texture2D mainmenu;
 		Texture2D buttonSprite;
 
 		Rectangle backButton;
@@ -31,11 +32,20 @@ namespace flappy
 		int resetButtState;
 	};
 
+	struct TextButton
+	{
+		std::string text; 
+		Rectangle rect;   
+		std::string url;  
+		Color color;     
+	};
+
 	void InitButtons(MenuButtons& buttons);
 	void UpdateSceneMenus(GameStats& gameStats, MenuButtons& buttons);
 	void DrawMenuTypeScene(GameStats gameStats, MenuButtons buttons);
+	Vector2 GetTextPositionCenteredOnButton(const Rectangle& button, const char* text, Font font, float fontSize, float spacing);
 	bool IsMouseOverButton(Rectangle buttonRec);
 	int GetButtonState(Rectangle button);
-	void DrawButton(Rectangle button, int state);
+	void DrawButton(Texture2D buttonSprite, Rectangle button, int state);
 
 }

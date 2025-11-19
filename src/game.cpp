@@ -8,7 +8,7 @@
 #include "entities/background.h"
 #include "score.h"
 #include "gameOverScreen.h"
-
+#include "creditsScreen.h"
 using namespace std;
 
 namespace flappy
@@ -43,7 +43,11 @@ namespace flappy
 		const int screenWidth = 1024;
 		const int screenHeight = 768;
 
-		InitWindow(screenWidth, screenHeight, "Aracnoids");
+
+		InitWindow(screenWidth, screenHeight, "Swimmy");
+		// Ahora sí cargamos la fuente
+		flappy::paperFont = LoadFontEx("res/Collage.ttf", gameStats.fontSize, 0, 0);
+
 
 		InitBackGorund();
 
@@ -52,7 +56,8 @@ namespace flappy
 		InitEnemy();
 		InitButtons(buttons);
 		InitScore();
-
+		InitCredits();
+		InitGameOverScreen();
 	}
 
 	void Input()
@@ -94,6 +99,7 @@ namespace flappy
 		switch ((SceneStatus)gameStats.gameStatus)
 		{
 		case SceneStatus::GAMEMENU:
+			ResetScore();
 			UpdateSceneMenus(gameStats, buttons);
 			break;
 		case SceneStatus::GAMERULES:
@@ -109,7 +115,6 @@ namespace flappy
 
 			break;
 		case SceneStatus::GAMEPLAY:
-
 			UpdateBackGorund();
 			UpdateScore1(player);
 			UpdatePlayer(player);
@@ -244,11 +249,13 @@ namespace flappy
 
 			break;
 		case SceneStatus::GAMEOVER1:
-			DrawGameOver1P(score1);
+			DrawGameOver1P(score1, buttons);
 			break;
+
 		case SceneStatus::GAMEOVER2:
-			DrawGameOver2P(score1,score2);
+			DrawGameOver2P(score1, score2, buttons);
 			break;
+
 
 		default:
 			break;

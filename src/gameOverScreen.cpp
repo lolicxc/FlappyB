@@ -1,5 +1,12 @@
 #include "gameOverScreen.h"
+#include "utilities.h"
 
+Texture2D gameOverText;
+
+void flappy::InitGameOverScreen()
+{
+    gameOverText = LoadTexture("res/gameover.png");
+}
 
 void flappy::UpdateGameOverScreen(GameStats& gameStats, MenuButtons& buttons)
 {
@@ -19,17 +26,26 @@ void flappy::UpdateGameOverScreen(GameStats& gameStats, MenuButtons& buttons)
     }
 }
 
-void flappy::DrawGameOver1P(int score)
+void flappy::DrawGameOver1P(int score, MenuButtons& buttons)
 {
-    DrawText("GAME OVER", 300, 150, 80, RED);
-    DrawText(TextFormat("Puntos: %i", score), 300, 280, 50, WHITE);
-    DrawText("Presiona ENTER para volver al menu", 220, 380, 30, LIGHTGRAY);
+    DrawTexture(gameOverText, 0, 0, WHITE);
+    DrawTextEx(paperFont, TextFormat("Score: %i", score), { 430, 280 }, 70, 1, BLACK);
+
+    // Dibujar botones
+    DrawButton(buttons.buttonSprite, buttons.resetButton, buttons.resetButtState);
+    DrawTextEx(flappy::paperFont, "Main menu", { 10, 700 }, 40, 1, BLACK);
 }
 
-void flappy::DrawGameOver2P(int score1, int score2)
+
+void flappy::DrawGameOver2P(int score1, int score2, MenuButtons& buttons)
 {
-    DrawText("GAME OVER", 300, 150, 80, RED);
-    DrawText(TextFormat("Jugador 1: %i", score1), 300, 280, 50, WHITE);
-    DrawText(TextFormat("Jugador 2: %i", score2), 300, 340, 50, WHITE);
-    DrawText("Presiona ENTER para volver al menu", 220, 420, 30, LIGHTGRAY);
+    DrawTexture(gameOverText,0 ,0 , WHITE);
+    DrawTextEx(flappy::paperFont, TextFormat("Player 1 score: %i", score1), { 300, 280 }, 70, 1,BLACK);
+    DrawTextEx(flappy::paperFont, TextFormat("Player 2 score: %i", score2), { 300, 360 }, 70, 1, BLACK);
+
+    // Dibujar botones
+    DrawButton(buttons.buttonSprite, buttons.resetButton, buttons.resetButtState);
+    DrawTextEx(flappy::paperFont, "Main menu", { 10, 700 }, 40, 1, BLACK);
+  
 }
+
