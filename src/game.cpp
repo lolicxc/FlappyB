@@ -9,6 +9,8 @@
 #include "score.h"
 #include "gameOverScreen.h"
 #include "creditsScreen.h"
+#include "howToPlay.h"
+
 using namespace std;
 
 namespace flappy
@@ -58,6 +60,7 @@ namespace flappy
 		InitScore();
 		InitCredits();
 		InitGameOverScreen();
+		InitHowToPlay();
 	}
 
 	void Input()

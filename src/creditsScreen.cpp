@@ -11,9 +11,9 @@ namespace flappy
 	{
 		Color defaultColor = BLACK;
 		creditsText = LoadTexture("res/credits.png");
-		creditButtons[0] = { "Francisco Jonas", {370, 250, 0, 0}, "https://lolicxc.itch.io/", defaultColor };
-		creditButtons[1] = { "Dolores Caparroz", {370, 300, 0, 0}, "https://www.artstation.com/mariadolorescaparroz", defaultColor };
-		creditButtons[2] = { "Dolores Caparroz", {370, 470, 0, 0}, "https://pixabay.com/users/lnplusmusic-47631836/", defaultColor };
+		creditButtons[0] = { "Francisco Jonas", {370, 250, 0, 0}, "https://4franjonas2.itch.io/", defaultColor };
+		creditButtons[1] = { "Dolores Caparroz", {370, 300, 0, 0}, "https://lolicxc.itch.io/", defaultColor };
+		creditButtons[2] = { "Dolores Caparroz", {370, 470, 0, 0}, "https://www.artstation.com/mariadolorescaparroz", defaultColor };
 
 		// back
 		creditButtons[3] = { "Back", {75, 705, 0, 0}, "", defaultColor };

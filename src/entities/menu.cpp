@@ -1,14 +1,15 @@
 #include "menu.h"
 #include "../creditsScreen.h"
+#include "../howToPlay.h"
 
 namespace flappy
 {
 	Vector2 recSize = { 90.0f, 50.0f };
 	bool isOnButton = false;
 	Texture2D pauseText;
+	
 
 	void DrawMainMenu(GameStats gameStats, MenuButtons buttons);
-	//void DrawRulesMenu(GameStats gameStats, MenuButtons buttons);
 	void DrawPause(GameStats gameStats, MenuButtons buttons);
 
 	bool isPaused = false;
@@ -87,11 +88,14 @@ namespace flappy
 				&& IsMouseOverButton(buttons.playButton))
 			{
 				//PlaySFX(audio.clickSound);
-				gameStats.gameStatus = SceneStatus::FIRSTGAME;
+				gameStats.previousGameplayMode = SceneStatus::GAMEPLAY;
+				gameStats.gameStatus = SceneStatus::GAMERULES;
 			}
 			else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && IsMouseOverButton(buttons.play2PButton))
 			{
-				gameStats.gameStatus = SceneStatus::GAMEPLAY2P; // ?? modo 2 jugadores
+				gameStats.previousGameplayMode = SceneStatus::GAMEPLAY2P;
+				gameStats.gameStatus = SceneStatus::GAMERULES;
+
 			}
 			//else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
 			//	&& IsMouseOverButton(buttons.rulesButton))
@@ -107,20 +111,9 @@ namespace flappy
 			}
 			break;
 
-			//case SceneStatus::GAMERULES:
-
-			//	buttons.backButtState = GetButtonState(buttons.backButton);
-
-			//	if (!IsMouseOverButton(buttons.backButton))
-			//		isOnButton = false;
-
-			//	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
-			//		&& IsMouseOverButton(buttons.backButton))
-			//	{
-			//		//PlaySFX(audio.clickSound);
-			//		gameStats.gameStatus = SceneStatus::GAMEMENU;
-			//	}
-			//	break;
+			case SceneStatus::GAMERULES:
+				UpdateHowToPlay(gameStats);
+				break;
 
 		case SceneStatus::GAMECREDITS:
 
@@ -240,8 +233,11 @@ namespace flappy
 
 			break;
 
-			//case SceneStatus::GAMERULES:
-			//	break;
+			case SceneStatus::GAMERULES:
+
+				DrawHowToScreen();
+
+				break;
 
 		case SceneStatus::GAMECREDITS:
 
@@ -331,69 +327,6 @@ namespace flappy
 		}
 	}
 
-	/*void DrawRulesMenu(GameStats gameStats, MenuButtons buttons)
-	{
-		if (gameStats.gameStatus == SceneStatus::GAMERULES)
-		{
-			int titleFontSize = 50;
-			int defaultFontSize = 20;
-			int exitFontSize = 20;
-
-			int LineText1PosX = GetScreenWidth() / 2 - 100;
-			int LineText1PosY = 100;
-
-			int LineText2PosX = 100;
-			int LineText2PosY = 230;
-
-			int LineText3PosX = 100;
-			int LineText3PosY = 280;
-
-			int LineText4PosX = 100;
-			int LineText4PosY = 310;
-
-			int LineText5PosX = 100;
-			int LineText5PosY = 380;
-
-			int LineText6PosX = 100;
-			int LineText6PosY = 450;
-
-			int LineText7PosX = 100;
-			int LineText7PosY = 480;
-
-			int LineText8PosX = 100;
-			int LineText8PosY = 510;
-
-			int LineText9PosX = 100;
-			int LineText9PosY = 650;
-
-			int LineText0PosX = 75;
-			int LineText0PosY = 705;
-
-			Color textColor = BLACK;
-
-			DrawButton(buttons.backButton, buttons.backButtState);
-
-			DrawText("RULES", LineText1PosX, LineText1PosY, titleFontSize, textColor);
-
-			DrawText("-To MOVE use LEFT Mouse Button and to SHOT use RIGHT mouse buton",
-				LineText2PosX, LineText2PosY, defaultFontSize, textColor);
-			DrawText("-In normal mode Destroy all Neufars to win.",
-				LineText3PosX, LineText3PosY, defaultFontSize, textColor);
-			DrawText("-In endless mode survive as long as you can.",
-				LineText4PosX, LineText4PosY, defaultFontSize, textColor);
-			DrawText("-You will have 3 lives. If you get touch by a neufar, you lose 1 life.",
-				LineText5PosX, LineText5PosY, defaultFontSize, textColor);
-			DrawText("TURTLE dont care about anything. But take care, they can change neufar direction !!",
-				LineText6PosX, LineText6PosY, defaultFontSize, textColor);
-			DrawText("FROGS loves water but we cant explain why their smell slows you down if they touch you.",
-				LineText7PosX, LineText7PosY, defaultFontSize, textColor);
-			DrawText("The PINK PETALS can reestore 1 life, if you are not full healt.",
-				LineText8PosX, LineText8PosY, defaultFontSize, textColor);
-			DrawText("-Use spacebar to pause game at any moment.",
-				LineText9PosX, LineText9PosY, defaultFontSize, textColor);
-			DrawText("Back", LineText0PosX, LineText0PosY, exitFontSize, textColor);
-		}
-	}*/
 	
 	void DrawPause(GameStats gameStats, MenuButtons buttons)
 	{

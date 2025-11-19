@@ -26,6 +26,7 @@
     <ClCompile Include="src\entities\player.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\gameOverScreen.cpp" />
+    <ClCompile Include="src\howToPlay.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\score.cpp" />
     <ClCompile Include="src\utilities.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="src\entities\player.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\gameOverScreen.h" />
+    <ClInclude Include="src\howToPlay.h" />
     <ClInclude Include="src\score.h" />
     <ClInclude Include="src\utilities.h" />
   </ItemGroup>

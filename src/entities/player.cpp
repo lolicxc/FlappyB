@@ -41,27 +41,39 @@ namespace flappy
 	void UpdatePlayer(Player& player)
 	{
 
-		float gravity = 1000.0f;   
-		float jumpForce = -450.0f; 
-		float rotVel = 400.0f;      
-		float rotMaxUp = -20.0f;   
+		float gravity = 1000.0f;
+		float jumpForce = -450.0f;
+
+		
+		float rotMaxUp = -20.0f;
 		float rotMaxDown = 60.0f;
-	
+
+		
+		float fallRotSpeed = 80.0f; // 
+
 		player.speed += gravity * GetFrameTime();
 
+		// salto
 		if (player.moveUp)
 		{
 			player.speed = jumpForce;
-			player.moveUp = false; 
+			player.moveUp = false;
+
+		
 			player.rotation = rotMaxUp;
 		}
 		else
 		{
 			
-			player.rotation += rotVel * GetFrameTime();
-		/*	if (player.rotation > rotMaxDown)
-				player.rotation = rotMaxDown;*/
+			if (player.speed > 0)
+				player.rotation += fallRotSpeed * GetFrameTime();
 		}
+
+
+		if (player.rotation > rotMaxDown)
+			player.rotation = rotMaxDown;
+		if (player.rotation < rotMaxUp)
+			player.rotation = rotMaxUp;
 
 		player.playerFigure.y += player.speed * GetFrameTime();
 
@@ -79,10 +91,11 @@ namespace flappy
 
 		Rectangle sourceRec = { 0.0f, 0.0f, (float)player.playerText.width, (float)player.playerText.height };
 
-		// destRec: posición centrada en playerFigure, tamaño igual al de la textura original
-		Rectangle destRec = {
-			player.playerFigure.x + player.playerFigure.width / 2.0f, // centro x
-			player.playerFigure.y + player.playerFigure.height / 2.0f, // centro y
+		
+		Rectangle destRec =
+		{
+			player.playerFigure.x + player.playerFigure.width / 2.0f, 
+			player.playerFigure.y + player.playerFigure.height / 2.0f,
 			(float)player.playerText.width,
 			(float)player.playerText.height
 		};
@@ -99,29 +112,38 @@ namespace flappy
 		if (!player.isAlive)
 			return;
 
-		Vector2 origin = { player.playerFigure.width / 2, player.playerFigure.height / 2 };
-		Rectangle sourceRec = { 0, 0, (float)player.playerText.width, (float)player.playerText.height };
-		Rectangle destRec = { player.playerFigure.x + origin.x, player.playerFigure.y + origin.y, player.playerFigure.width, player.playerFigure.height };
+		Rectangle sourceRec = { 0.0f, 0.0f, (float)player.playerText.width, (float)player.playerText.height };
+
+	
+		Rectangle destRec =
+		{
+			player.playerFigure.x + player.playerFigure.width / 2.0f, 
+			player.playerFigure.y + player.playerFigure.height / 2.0f, 
+			(float)player.playerText.width,
+			(float)player.playerText.height
+		};
+
+	
+		Vector2 origin = { player.playerText.width / 2.0f, player.playerText.height / 2.0f };
 
 		DrawTexturePro(player.player2Text, sourceRec, destRec, origin, player.rotation, WHITE);
 	}
 
 	void CheckArenaCollision(Player& player)
 	{
-		// límite superior
+		
 		if (player.playerFigure.y < 0.0f)
 		{
 			player.playerFigure.y = 0.0f;
-			player.speed = 0.0f; // detener impulso hacia arriba
+			player.speed = 0.0f; 
 		}
 
-		// límite inferior: perder si toca
 		if (player.playerFigure.y + player.playerFigure.height > GetScreenHeight())
 		{
 			player.playerFigure.y = GetScreenHeight() - player.playerFigure.height;
 			player.speed = 0.0f;
-			player.isAlive = false;      // marcar jugador como muerto
-			player.playerGotHit = true;  // opcional, para efectos de golpe
+			player.isAlive = false;      
+			player.playerGotHit = true;  
 		}
 	}
 }
