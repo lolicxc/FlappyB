@@ -18,7 +18,19 @@ namespace flappy
 		bool isAlive;
 		Texture2D playerText;
 		Texture2D player2Text;
+		Texture2D hitTextP1;
+		Texture2D hitTextP2;
 		float rotation;
+
+		int hitMaxFrames;
+		int hitCurrentFrame;
+		float hitFrameTime;
+		float hitTimer;
+
+		float deathTimer = 0.0f;
+		float deathDuration = 1.0f; 
+		bool finishedDeathAnim;
+
 	};
 
 	void InitPlayer(Player& player);

@@ -10,7 +10,7 @@
 #include "gameOverScreen.h"
 #include "creditsScreen.h"
 #include "howToPlay.h"
-
+#include "Audio.h"
 using namespace std;
 
 namespace flappy
@@ -19,6 +19,10 @@ namespace flappy
 	Player player2;
 	GameStats gameStats;
 	MenuButtons buttons;
+
+	SceneStatus lastScene = SceneStatus::GAMEMENU;
+	static bool menuPlaying = false;
+	static bool gameplayPlaying = false;
 
 	void Init();
 	void Input();
@@ -47,6 +51,7 @@ namespace flappy
 
 
 		InitWindow(screenWidth, screenHeight, "Swimmy");
+		InitAudioDevice();
 		// Ahora sí cargamos la fuente
 		flappy::paperFont = LoadFontEx("res/Collage.ttf", gameStats.fontSize, 0, 0);
 
@@ -61,6 +66,7 @@ namespace flappy
 		InitCredits();
 		InitGameOverScreen();
 		InitHowToPlay();
+		InitAudio();
 	}
 
 	void Input()
@@ -99,6 +105,46 @@ namespace flappy
 
 	void Update()
 	{
+		
+		SceneStatus currentScene = (SceneStatus)gameStats.gameStatus;
+		if (currentScene != lastScene)
+		{
+			// detener todo
+			StopMusicStream(mainMenuMusic);
+			StopMusicStream(gameMusicMusic);
+
+			menuPlaying = false;
+			gameplayPlaying = false;
+
+			lastScene = currentScene;
+		}
+
+
+		if (currentScene == SceneStatus::GAMEMENU)
+		{
+			if (!menuPlaying)
+			{
+				PlayMusicStream(mainMenuMusic);
+				menuPlaying = true;
+			}
+		}
+		else if (currentScene == SceneStatus::GAMEPLAY || currentScene == SceneStatus::GAMEPLAY2P)
+		{
+			if (!gameplayPlaying)
+			{
+				PlayMusicStream(gameMusicMusic);
+				gameplayPlaying = true;
+			}
+		}
+
+		if (menuPlaying)
+			UpdateMusicStream(mainMenuMusic);
+
+		if (gameplayPlaying)
+			UpdateMusicStream(gameMusicMusic);
+
+
+
 		switch ((SceneStatus)gameStats.gameStatus)
 		{
 		case SceneStatus::GAMEMENU:
@@ -118,6 +164,7 @@ namespace flappy
 
 			break;
 		case SceneStatus::GAMEPLAY:
+
 			UpdateBackGorund();
 			UpdateScore1(player);
 			UpdatePlayer(player);
@@ -127,36 +174,68 @@ namespace flappy
 
 			if (player.playerGotHit)
 			{
-				gameStats.gameStatus = SceneStatus::GAMEOVER1;
+				player.deathTimer += GetFrameTime();
+
+				// el personaje ya no se debe mover cuando muere
+				player.isAlive = false;
+
+				// cuando terminó la animación, recién cambiar de escena
+				if (player.deathTimer >= player.deathDuration)
+				{
+					gameStats.gameStatus = SceneStatus::GAMEOVER1;
+				}
+				break; // importante: no seguir actualizando
 			}
 			break;
 		case SceneStatus::GAMEPLAY2P:
+		
 			UpdateBackGorund();
+
+			// Jugador 1
 			if (player.isAlive)
 			{
 				UpdateScore1(player);
 				UpdatePlayer(player);
 				CheckPlayerColision(player.playerHitbox, player.playerGotHit);
+
 				if (player.playerGotHit)
-					player.isAlive = false;
+				{
+					player.isAlive = false; // ya no se mueve
+				}
+			}
+			else
+			{
+				
+				UpdatePlayer(player);
+			
 			}
 
+			// Jugador 2
 			if (player2.isAlive)
 			{
 				UpdateScore2(player2);
 				UpdatePlayer(player2);
 				CheckPlayerColision(player2.playerHitbox, player2.playerGotHit);
+
 				if (player2.playerGotHit)
+				{
 					player2.isAlive = false;
+				}
+			}
+			else
+			{
+				UpdatePlayer(player2); 
 			}
 
 			UpdateEnemy();
 			UpdateSceneMenus(gameStats, buttons);
 
+			
 			if (!player.isAlive && !player2.isAlive)
 			{
 				gameStats.gameStatus = SceneStatus::GAMEOVER2;
 			}
+			
 			break;
 		case SceneStatus::GAMEPAUSE:
 
@@ -217,8 +296,8 @@ namespace flappy
 		case SceneStatus::GAMEPLAY:
 
 			DrawBackGround();
-			DrawPlayer(player);
 			DrawEnemy();
+			DrawPlayer(player);
 			DrawScore();
 
 			break;

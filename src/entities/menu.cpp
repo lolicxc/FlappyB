@@ -31,7 +31,7 @@ namespace flappy
 	void InitButtons(MenuButtons& buttons)
 	{
 		buttons.buttonSprite = LoadTexture("res/button.png");
-		buttons.mainmenu = LoadTexture("res/mainmenu.png");
+		buttons.mainmenu = LoadTexture("res/mainmenu2.png");
 		float menuButtonsPosX = GetScreenWidth() / 2;
 		float backButtonPosX = 100.0f;
 		float backButtonPosY = 720.0f;

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\audio.cpp" />
     <ClCompile Include="src\creditsScreen.cpp" />
     <ClCompile Include="src\entities\background.cpp" />
     <ClCompile Include="src\entities\enemy.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="src\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\audio.h" />
     <ClInclude Include="src\creditsScreen.h" />
     <ClInclude Include="src\entities\background.h" />
     <ClInclude Include="src\entities\enemy.h" />
