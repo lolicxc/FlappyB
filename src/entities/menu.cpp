@@ -32,7 +32,7 @@ namespace flappy
 	{
 		buttons.buttonSprite = LoadTexture("res/button.png");
 		buttons.mainmenu = LoadTexture("res/mainmenu2.png");
-		float menuButtonsPosX = GetScreenWidth() / 2;
+		float menuButtonsPosX = (float)GetScreenWidth() / 2;
 		float backButtonPosX = 100.0f;
 		float backButtonPosY = 720.0f;
 
@@ -223,9 +223,7 @@ namespace flappy
 	}
 	void DrawMenuTypeScene(GameStats gameStats, MenuButtons buttons)
 	{
-		int auxPosX = 10;
-		int auxPosY = 10;
-		int auxFont = 20;
+		
 
 		switch ((SceneStatus)gameStats.gameStatus)
 		{
@@ -252,8 +250,8 @@ namespace flappy
 		{
 
 			Vector2 pos = { 300, 100 };
-			float fontSize = 50.0f;
-			float spacing = 2.0f;
+	
+
 			Color tint = WHITE;
 
 			
@@ -299,10 +297,10 @@ namespace flappy
 		if (gameStats.gameStatus == SceneStatus::GAMEMENU)
 		{
 			
-			int defaultFontSize = 45;  
-			int exitFontSize = 15;
+			float defaultFontSize = 45;  
+		
 
-			float spacing = 2.0f; 
+	
 			Color textColor = BLACK;
 
 			DrawTexture(buttons.mainmenu, 0, 0, WHITE);
@@ -336,7 +334,7 @@ namespace flappy
 	{
 		if (gameStats.gameStatus != SceneStatus::GAMEPAUSE)
 			return; // Salir si no estamos en pausa
-		int defaultFontSize = 50;
+		float defaultFontSize = 50.0f;
 
 		Color textColor = BLACK;
 		pauseText = LoadTexture("res/pause.png");
