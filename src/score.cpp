@@ -1,6 +1,7 @@
 #include "score.h"
 #include "entities/enemy.h"
 #include "entities/player.h"
+#include "audio.h"
 
 namespace flappy
 {
@@ -24,6 +25,7 @@ namespace flappy
 
 			if (!enemy[i].scored1 && playerX > pipeRight)
 			{
+				PlaySound(scoreSound);
 				score1++;
 				enemy[i].scored1 = true;
 			}
@@ -41,6 +43,7 @@ namespace flappy
 
 			if (!enemy[i].scored2 && playerX > pipeRight)
 			{
+				PlaySound(scoreSound);
 				score2++;
 				enemy[i].scored2 = true;
 			}
@@ -62,11 +65,12 @@ namespace flappy
 	{
 
 		DrawTexture(scoreText, 10, 10, WHITE);
-		DrawText(TextFormat("%i", score1), 150, 20, 40, BLACK);
+		DrawTextEx(paperFont, TextFormat("%i", score1), { 150, 20 }, 40, 1, BLACK);
+	
 	}
 	void DrawScore2()
 	{
 		DrawTexture(scoreText, 800, 10, WHITE);
-		DrawText(TextFormat("%i", score2), 940, 20, 40, BLACK);
+		DrawTextEx(paperFont, TextFormat("%i", score2), { 940, 20 }, 40, 1, BLACK);
 	}
 }

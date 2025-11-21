@@ -1,7 +1,7 @@
 #include "menu.h"
 #include "../creditsScreen.h"
 #include "../howToPlay.h"
-
+#include "../audio.h"
 namespace flappy
 {
 	Vector2 recSize = { 90.0f, 50.0f };
@@ -82,17 +82,20 @@ namespace flappy
 				/*&& !IsMouseOverButton(buttons.rulesButton)*/
 				&& !IsMouseOverButton(buttons.creditsButton))
 			{
+	
 				isOnButton = false;
 			}
 			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
 				&& IsMouseOverButton(buttons.playButton))
 			{
 				//PlaySFX(audio.clickSound);
+				PlaySound(clickSound);
 				gameStats.previousGameplayMode = SceneStatus::GAMEPLAY;
 				gameStats.gameStatus = SceneStatus::GAMERULES;
 			}
 			else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && IsMouseOverButton(buttons.play2PButton))
 			{
+				PlaySound(clickSound);
 				gameStats.previousGameplayMode = SceneStatus::GAMEPLAY2P;
 				gameStats.gameStatus = SceneStatus::GAMERULES;
 
@@ -126,7 +129,7 @@ namespace flappy
 			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
 				&& IsMouseOverButton(buttons.backButton))
 			{
-				//PlaySFX(audio.clickSound);
+				PlaySound(clickSound);
 				gameStats.gameStatus = SceneStatus::GAMEMENU;
 			}
 			break;
@@ -141,7 +144,7 @@ namespace flappy
 			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
 				&& IsMouseOverButton(buttons.backMenuButton))
 			{
-				//PlaySFX(audio.clickSound);
+				PlaySound(clickSound);
 				gameStats.gameStatus = SceneStatus::GAMEMENU;
 			}
 			if (IsKeyPressed(KEY_SPACE))
@@ -197,14 +200,14 @@ namespace flappy
 			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
 				&& IsMouseOverButton(buttons.backMenuButton))
 			{
-				//PlaySFX(audio.clickSound);
+				PlaySound(clickSound);
 				isOnButton = false;
 				gameStats.gameStatus = SceneStatus::GAMEMENU;
 			}
 			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
 				&& IsMouseOverButton(buttons.resetButton))
 			{
-				//PlaySFX(audio.clickSound);
+				PlaySound(clickSound);
 				gameStats.gameStatus = SceneStatus::RESETGAME;
 			}
 			//if (!IsKeyPressed(KEY_SPACE) && IsKeyReleased(KEY_SPACE))
@@ -264,7 +267,7 @@ namespace flappy
 
 			if (!IsKeyPressed(KEY_W) && IsKeyReleased(KEY_W))
 			{
-				//PlaySFX(audio.clickSound);
+				PlaySound(clickSound);
 				gameStats.gameStatus = SceneStatus::GAMEPAUSE;
 			}
 			break;

@@ -52,7 +52,7 @@ namespace flappy
 
 		InitWindow(screenWidth, screenHeight, "Swimmy");
 		InitAudioDevice();
-		// Ahora sí cargamos la fuente
+	
 		flappy::paperFont = LoadFontEx("res/Collage.ttf", gameStats.fontSize, 0, 0);
 
 
@@ -167,24 +167,23 @@ namespace flappy
 
 			UpdateBackGorund();
 			UpdateScore1(player);
-			UpdatePlayer(player);
+			UpdatePlayer(player); 
 			UpdateEnemy();
 			UpdateSceneMenus(gameStats, buttons);
 			CheckPlayerColision(player.playerHitbox, player.playerGotHit);
 
 			if (player.playerGotHit)
 			{
+				
 				player.deathTimer += GetFrameTime();
 
-				// el personaje ya no se debe mover cuando muere
 				player.isAlive = false;
 
-				// cuando terminó la animación, recién cambiar de escena
 				if (player.deathTimer >= player.deathDuration)
 				{
 					gameStats.gameStatus = SceneStatus::GAMEOVER1;
 				}
-				break; // importante: no seguir actualizando
+				break; 
 			}
 			break;
 		case SceneStatus::GAMEPLAY2P:
@@ -200,12 +199,13 @@ namespace flappy
 
 				if (player.playerGotHit)
 				{
-					player.isAlive = false; // ya no se mueve
+					
+					player.isAlive = false; 
 				}
 			}
 			else
 			{
-				
+				PlaySound(deadSound);
 				UpdatePlayer(player);
 			
 			}
@@ -219,6 +219,7 @@ namespace flappy
 
 				if (player2.playerGotHit)
 				{
+					PlaySound(deadSound);
 					player2.isAlive = false;
 				}
 			}

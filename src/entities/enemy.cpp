@@ -1,5 +1,5 @@
 #include "enemy.h"
-
+#include "../audio.h"
 
 namespace flappy
 {
@@ -121,6 +121,7 @@ namespace flappy
 					playerHitBox.y < enemy[i].enemyFigureDown.y + enemy[i].enemyFigureDown.height &&
 					playerHitBox.y + playerHitBox.height > enemy[i].enemyFigureDown.y)
 				{
+				
 					isHit = true;
 				}
 
@@ -130,6 +131,7 @@ namespace flappy
 					playerHitBox.y < enemy[i].enemyFigureUp.y + enemy[i].enemyFigureUp.height &&
 					playerHitBox.y + playerHitBox.height > enemy[i].enemyFigureUp.y)
 				{
+					
 					isHit = true;
 				}
 			}
