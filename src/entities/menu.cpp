@@ -225,13 +225,13 @@ namespace flappy
 	{
 		int auxPosX = 10;
 		int auxPosY = 10;
-		int auxFont = 10;
+		int auxFont = 20;
 
 		switch ((SceneStatus)gameStats.gameStatus)
 		{
 		case SceneStatus::GAMEMENU:
 
-			DrawText("v0.4", auxPosX, auxPosY, auxFont, WHITE);
+			
 			DrawMainMenu(gameStats, buttons);
 
 			break;
@@ -256,7 +256,7 @@ namespace flappy
 			float spacing = 2.0f;
 			Color tint = WHITE;
 
-			DrawTextEx(flappy::paperFont, "Press SPACE to START", pos, fontSize, spacing, tint);
+			
 			DrawButton(buttons.buttonSprite, buttons.backMenuButton, buttons.backToMenuButtState);
 			DrawTextEx(flappy::paperFont, "Main menu", {10, 700}, 40, 1, BLACK);
 
@@ -313,6 +313,7 @@ namespace flappy
 			Vector2 pos;
 
 			//Play
+			DrawText("v1.0", 10, 10, 20, BLACK);
 			pos = GetTextPositionCenteredOnButton(buttons.playButton, "Single player", flappy::paperFont, (float)gameStats.fontSize, 2.0f);
 			pos.x += 50;
 			DrawTextEx(flappy::paperFont, "Single player", pos, defaultFontSize, 2.0f, BLACK);
